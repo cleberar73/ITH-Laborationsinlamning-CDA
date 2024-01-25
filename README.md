@@ -25,6 +25,6 @@ A friendly menu is created and there are the 3 follwoing choices:
   
 **Obs**.: In order to play the game again you have to quit the game using the option 3 and Run Python file again.
   
-**Bugs**: When the computer loose the game it showing twing the message! I am working on it.
+**Bugs**: When the computer loose the game it is showing twice the message! I am working on it.
  
  Thanks
