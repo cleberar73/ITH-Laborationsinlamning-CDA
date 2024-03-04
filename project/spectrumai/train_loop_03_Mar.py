@@ -3,6 +3,7 @@ import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 from keras.optimizers import Adam
+from matplotlib.lines import Line2D
 from generator import build_generator
 from discriminator import build_discriminator
 
@@ -24,18 +25,28 @@ def plot_data(real_samples, fake_samples, d_loss_real, d_loss_fake, g_loss):
     plt.hist(real_samples, bins=30, alpha=0.5, label='Real Samples')
     plt.hist(fake_samples, bins=30, alpha=0.5, label='Fake Samples')
     plt.title('REAL & FAKE SAMPLES')
-    plt.legend()
+    plt.legend(loc="upper right")
     #==============================================================================
     plt.figure(figsize=(12, 6))
     real_data = load_data('./spectrumai/data/x_tst.npy')
     real_label = load_data('./spectrumai/data/d_tst.npy')
+
     for i in range(len(real_data)):
         if real_label[i]:
-            plt.plot(np.arange(0, 59), real_data[i], color = 'red')
+            plt.plot(np.arange(0, 59), real_data[i], color='red')
         else:
-            plt.plot(np.arange(0, 59),  real_data[i], color = 'green')
-    plt.xlabel("X")
-    plt.ylabel("Y")
+            plt.plot(np.arange(0, 59),  real_data[i], color='green')
+
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    #ANOTHER WAY TO SET A CUSTOM LEGEND
+    legend_elements = [
+        Line2D([0], [0], color='r', lw=2, label='"RED" - Unhealthy-(TUMOR)"'),
+        Line2D([0], [0], color='g', lw=2, label='"GREEN" - Healthy-(NO TUMOR)"')
+    ]
+    subplotleg = plt.subplot()
+    custom_legend = subplotleg.legend(handles=legend_elements, loc='upper right', frameon=False)
+    subplotleg.add_artist(custom_legend)
     plt.title('REAL DATASET')
     plt.grid(True)
     #==============================================================================
@@ -43,8 +54,9 @@ def plot_data(real_samples, fake_samples, d_loss_real, d_loss_fake, g_loss):
     plt.plot(d_loss_real, label="Discriminator Loss", color = 'red')
     plt.plot(d_loss_fake, label="Discriminator Loss Fake", color = 'blue')
     plt.plot(g_loss, label="Generator Loss", color = 'green')
-    plt.xlabel("X")
-    plt.ylabel("Y")
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.legend(loc="lower right")
     plt.title('LOSS DISCRIMINATOR & GENERATOR')
     plt.grid(True)
     #==============================================================================
@@ -83,7 +95,8 @@ def train_gan(generator, discriminator, gan_model, real_data, epochs=1000, batch
 
         print(f'Epoch: {epoch+1}/{epochs}, D Loss Real: {d_loss_real}, D Loss Fake: {d_loss_fake}, G Loss: {g_loss}')
 
-        if epoch % 1000 == 0:
+        #ADJUST IF STATEM. ACCORDING TO EPOCHS E.G 10, 100, 1000 ETC
+        if epoch % 100 == 0:
             generator.save(f'generator_model_{epoch}.keras')
 
     plot_data(real_samples, fake_samples, d_loss_real, d_loss_fake, g_loss)
@@ -120,4 +133,5 @@ def create_gan_model(alpha=2.0, descrimiator_lr=0.0001, generator_lr=0.0001, epo
         print(f'Saving model {model_path}')
         generator.save(model_path)
 
-create_gan_model(epochs=1000, alpha=2.3, save_model=True, model_path='./spectrumai/models/gan_model_new.keras')
+#HERE YOU CAN CONTROL THE DEFAULT VALUES FOR THE PARAMETERS - E.G INCREASE THE EPOCHS
+create_gan_model(epochs=100, alpha=2.3, save_model=True, model_path='./spectrumai/models/gan_model_new.keras')

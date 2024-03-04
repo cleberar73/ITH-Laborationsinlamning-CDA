@@ -9,30 +9,25 @@ def load_data(filename):
 def flat_data_or_label(data):
     return [value for row in data for value in row]
 
-# def generate_samples_using_trained_model(model, n_samples=10000):
+#ADJUST THE FUNCTION PARAMETERS n_samples ACCORDING TO THE EPOCHS E.G 10, 100, 1000 ETC
 def generate_samples_using_trained_model(model, n_samples=1000):
     noise = np.random.normal(0, 1, size=(n_samples, 10))
     return model.predict(noise)
 
 def plot_real_data(sorted_data,real_data, real_label,y_values):
-    plt.figure(figsize=(10, 6))
-    plt.plot(sorted_data, label="Gen. Sorted Data", color = 'red')
-    plt.plot(real_data, label="Real Data", color = 'red')
-    plt.plot(y_values, label="Y Values", color = 'green')
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.grid(True)
+    #PLOT THE GRAPHS
+    plt.figure(figsize=(12, 6))
+    plt.hist(sorted_data, bins=30, alpha=0.5, label='SORTED DATA')
+    plt.hist(y_values, bins=30, alpha=0.5, label='Y Values')
+    plt.legend(loc="upper right")
     plt.title("SORTED DATA & Y VALUES")
     plt.show()
-    #PLOT THE REAL DATA - RED OR GREEN ACCORDING TO ITS CLASS
-    #==============================================================================
 
-#LOAD THE GAN MODEL
+#LOAD THE GAN MODEL AFTER SAVED
 trained_generator = load_model('./spectrumai/models/gan_model_new.keras')
 
 #THIS IS THE PREDICT FROM THE GAN_TRAINED_MODEL 
-#CHANGE THE N_SAMPLES ACCORDING TO THE TRAIN_LOOP EPOCHS
-# generated_samples = generate_samples_using_trained_model(trained_generator, n_samples=10000)
+#ADJUST THE FUNCTION PARAMETERS n_samples ACCORDING TO THE EPOCHS E.G 10, 100, 1000 ETC
 generated_samples = generate_samples_using_trained_model(trained_generator, n_samples=1000)
 
 real_data = load_data('./spectrumai/data/x_tst.npy')
@@ -61,15 +56,11 @@ print('='*80)
 
 #SORT THE DATA
 sorted_data = np.sort(generated_samples)
-# print(f"Sorted data LEN: ", len(sorted_data))
 
 #CREATE AN ARRAY OF Y VALUES RANGING FROM 0 TO 1
-#WITH THE SAME LENGTH AS THE SORTED DATA
 y_values = np.arange(1, len(sorted_data) +1) / len(sorted_data)
-# print(f"Y values: ", y_values)
 
 #PLOT THE GRAPH
-# plot_real_data(real_data, real_label)
 plot_real_data(sorted_data, real_data,real_label, y_values)
 
 
